@@ -1,0 +1,22 @@
+double		*polygonX_device 	= NULL; 	cudaMalloc((void **)&polygonX_device, numOfPoints * sizeof(double )); 			handle_error_cuda("cudaMalloc polygonX_device");
+double 		*polygonY_device 	= NULL; 	cudaMalloc((void **)&polygonY_device, numOfPoints * sizeof(double )); 			handle_error_cuda("cudaMalloc polygonY_device");
+long int 	*polygonId_device 	= NULL; 	cudaMalloc((void **)&polygonId_device, numOfPoints * sizeof(long int));			handle_error_cuda("cudaMalloc polygonId_device");
+cudaMemcpy(polygonX_device,polygonX_host	, numOfPoints * sizeof(double), cudaMemcpyHostToDevice); 						handle_error_cuda("cudaMemcpy polygonX_host to polygonX_device");
+cudaMemcpy(polygonY_device,polygonY_host	, numOfPoints * sizeof(double), cudaMemcpyHostToDevice); 						handle_error_cuda("cudaMemcpy polygonX_host to polygonY_device");
+cudaMemcpy(polygonId_device,polygonId_host	, numOfPoints * sizeof(long int), cudaMemcpyHostToDevice); 						handle_error_cuda("cudaMemcpy polygonX_host to polygonId_device");
+
+double 		*lineX0_device 		= NULL;		cudaMalloc((void **)&lineX0_device, numOfLines * sizeof(double )); 				handle_error_cuda("cudaMalloc lineX0_device");
+double 		*lineY0_device 		= NULL;		cudaMalloc((void **)&lineY0_device, numOfLines * sizeof(double )); 				handle_error_cuda("cudaMalloc lineY0_device");
+double 		*lineX1_device 		= NULL;		cudaMalloc((void **)&lineX1_device, numOfLines * sizeof(double )); 				handle_error_cuda("cudaMalloc lineX1_device");
+double 		*lineY1_device 		= NULL;		cudaMalloc((void **)&lineY1_device, numOfLines * sizeof(double )); 				handle_error_cuda("cudaMalloc lineX1_device");
+
+cudaMemcpy(lineX0_device,lineX0_host	, numOfLines * sizeof(double), cudaMemcpyHostToDevice); 							handle_error_cuda("cudaMemcpy LineX0_host to lineX0_device");
+cudaMemcpy(lineY0_device,lineY0_host	, numOfLines * sizeof(double), cudaMemcpyHostToDevice); 							handle_error_cuda("cudaMemcpy LineY0_host to lineY0_device");
+cudaMemcpy(lineX1_device,lineX1_host	, numOfLines * sizeof(double), cudaMemcpyHostToDevice); 							handle_error_cuda("cudaMemcpy LineX1_host to lineY1_device");
+cudaMemcpy(lineY1_device,lineY1_host	, numOfLines * sizeof(double), cudaMemcpyHostToDevice); 							handle_error_cuda("cudaMemcpy LineY1_host to lineY1_device");
+
+long int 	*profileStartIndex_device; cudaMalloc((void **)&profileStartIndex_device, numOfProfiles * sizeof(long int)); 	handle_error_cuda("cudaMalloc profileStartIndex_device");
+cudaMemcpy(profileStartIndex_device, profileStartIndex_host, numOfProfiles * sizeof(long int), cudaMemcpyHostToDevice); 	handle_error_cuda("cudaMemcpy profileStartIndex_host to profileStartIndex_device");
+
+long int *profileLength_device;  	cudaMalloc((void **)&profileLength_device, numOfProfiles * sizeof(long int)); 			handle_error_cuda("cudaMalloc profileLength_device");
+cudaMemcpy(profileLength_device, profileLength_host, numOfProfiles * sizeof(long int), cudaMemcpyHostToDevice); 			handle_error_cuda("cudaMemcpyHostToDevice profileStartIndex_host to profileStartIndex_device");

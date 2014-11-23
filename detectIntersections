@@ -1,0 +1,35 @@
+double *intersectionsX_host 		= (double *)malloc(sizeof(double));
+double *intersectionsY_host 		= (double *)malloc(sizeof(double));
+double *catchedIntersectionX_host 	= (double *)malloc(numOfLines * sizeof(double));
+double *catchedIntersectionY_host 	= (double *)malloc(numOfLines * sizeof(double));
+short  *isThereIntersection_host  	= (short  *)malloc(numOfLines * sizeof(double));
+
+double *catchedIntersectionX_device = NULL; cudaMalloc((void **)&catchedIntersectionX_device, numOfLines * sizeof(double)); handle_error_cuda("cudaMalloc catchedIntersectionX_device");
+double *catchedIntersectionY_device = NULL; cudaMalloc((void **)&catchedIntersectionY_device, numOfLines * sizeof(double)); handle_error_cuda("cudaMalloc catchedIntersectionY_device");
+short  *isThereIntersection_device  = NULL; cudaMalloc((void **)&isThereIntersection_device , numOfLines * sizeof(short )); handle_error_cuda("cudaMalloc isThereIntersection_device" );
+
+int blockSize 	= 16;
+int nBlocks 	=	numOfLines/blockSize + (numOfLines % blockSize ==0? 0 : 1);
+long int intersectionIndex = 0;
+for (long int i = 0; i < numOfPoints; i++){
+	if (i%10000 ==0){ 
+		printf("%ld\n",i );
+		printf("numOfIntersections=%ld\n",numOfIntersections );
+	}
+	checkIntersection<<<nBlocks,blockSize>>>(lineX0_device,lineY0_device,lineX1_device,lineY1_device, isThereIntersection_device,numOfLines, i, catchedIntersectionX_device, catchedIntersectionY_device, eps);
+	handle_error_cuda("checkIntersection");
+	cudaMemcpy(isThereIntersection_host,isThereIntersection_device, numOfLines * sizeof(short),cudaMemcpyDeviceToHost);
+	cudaMemcpy(catchedIntersectionX_host,catchedIntersectionX_device, numOfLines * sizeof(double),cudaMemcpyDeviceToHost);
+	cudaMemcpy(catchedIntersectionY_host,catchedIntersectionY_device, numOfLines * sizeof(double),cudaMemcpyDeviceToHost);
+	for (long int j = 0; j < numOfLines; j++){
+		if (isThereIntersection_host[j]==1) {
+			intersectionsX_host[intersectionIndex] = catchedIntersectionX_host[j];
+			intersectionsY_host[intersectionIndex] = catchedIntersectionY_host[j];
+			numOfIntersections++;
+			intersectionIndex++;
+			intersectionsX_host = (double *)realloc(intersectionsX_host, (intersectionIndex + 1) * sizeof(double));
+			intersectionsY_host = (double *)realloc(intersectionsY_host, (intersectionIndex + 1) * sizeof(double));
+		}
+	}
+	// printf("%f %f %ld\n", polygonX_host[i], polygonY_host[i],polygonId_host[i] );
+}

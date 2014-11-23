@@ -1,0 +1,21 @@
+long int 	*profileStartIndex_host = (long int *)malloc(numOfProfiles * sizeof(long int));
+long int 	*profileLength_host		= (long int *)malloc(numOfProfiles * sizeof(long int));
+	profileStartIndex_host[0] = 0;
+	currProfileId=polygonId_host[0];
+	profileStartIndex = 0;
+	for (long int i = 1; i < numOfPoints; i++){
+		if (currProfileId != polygonId_host[i]) {
+			currProfileId = polygonId_host[i]; 
+			profileStartIndex++;
+			profileStartIndex_host[profileStartIndex] = i;
+		}
+	}
+	profileStartIndex = 0;	
+	for (long int i = 0; i < numOfProfiles; i++){
+		if (i != numOfProfiles - 1 ){
+			profileLength_host[i] = profileStartIndex_host[i+1]-profileStartIndex_host[i];
+		}
+		else
+			profileLength_host[i] = numOfPoints-profileStartIndex_host[i];
+			// printf("%ld %ld %ld\n",i, profileStartIndex_host[i], profileLength_host[i]);
+	}	

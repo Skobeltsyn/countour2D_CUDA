@@ -1,0 +1,9 @@
+double 		eps 						= 0.000002f;
+long int 	numOfProfiles 				= 0;
+long int 	numOfPoints 				= 0;
+long int 	numOfLines 					= 0;
+int 	 	numOfInterpolationPoints  	= 100;
+long int 	numOfIntersections 			= 0;
+long int 	unlistedNumOfIntersections  = 0;
+long int 	numOfTriangles				= 0;
+long int 	numOfEdgePoints 			= 0;

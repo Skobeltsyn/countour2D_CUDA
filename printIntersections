@@ -1,0 +1,5 @@
+FILE *intersections = fopen("intersections.txt","w");
+	for (long int i = 0; i < numOfIntersections; i++){
+		fprintf(intersections, "%lf,%lf\n", intersectionsX_host[i], intersectionsY_host[i]);
+	}
+	fclose(intersections);

@@ -1,0 +1,14 @@
+FILE *output = fopen("output.txt","w");
+	for (int i = 0; i < numOfLines; i++){
+		double x0 = lineX0_host[i];
+		double y0 = lineY0_host[i];
+		double x1 = lineX1_host[i];
+		double y1 = lineY1_host[i];
+		// printf("%ld (%.3lf,%.3lf) to (%.3lf,%.3lf)\n", lineProfileId_host[i],x0,y0,x1,y1 );
+		for (int t = 0; t < numOfInterpolationPoints; t++){
+			double currX = x0 + t * (x1-x0)/numOfInterpolationPoints;
+			double currY = y0 + t * (y1-y0)/numOfInterpolationPoints;
+			fprintf(output, "%lf,%lf\n",currX,currY );
+		}
+	}
+	fclose(output);

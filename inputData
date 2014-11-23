@@ -1,0 +1,23 @@
+double *polygonX_host 	= (double   *)     malloc(1 * sizeof(double  ));
+	double *polygonY_host 	= (double   *)     malloc(1 * sizeof(double  ));
+	long int *polygonId_host	= (long int *) malloc(1 * sizeof(long int));
+
+	FILE *file 			= fopen(argv[1],"r");
+	if (file == NULL) {printf("No file!\n"); exit(0);}
+	int currIndex 		= 0;
+	int currProfileId 	= -1;
+	do{
+		int gMode=0;
+		fscanf(file,"%ld G%dX%lfY%lf\n",&polygonId_host[currIndex],&gMode,&polygonX_host[currIndex],&polygonY_host[currIndex]);
+		if (currProfileId != polygonId_host[currIndex]) {
+			numOfProfiles++;
+			currProfileId=polygonId_host[currIndex];
+		}
+		currIndex++;
+		numOfPoints++;
+		polygonX_host 	= (double 	*)realloc(polygonX_host,	(currIndex+1)*sizeof(double));
+		polygonY_host 	= (double 	*)realloc(polygonY_host,	(currIndex+1)*sizeof(double));
+		polygonId_host 	= (long int *)realloc(polygonId_host,	(currIndex+1)*sizeof(long int));
+		
+	}while (!feof(file));
+	fclose(file);

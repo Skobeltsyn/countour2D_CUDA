@@ -1,0 +1,56 @@
+	double 		*lineX0_host 			= (double *)  malloc(sizeof(double));
+	double 		*lineY0_host 			= (double *)  malloc(sizeof(double));
+	double 		*lineX1_host 			= (double *)  malloc(sizeof(double));
+	double 		*lineY1_host 			= (double *)  malloc(sizeof(double));
+
+
+
+	currProfileId 						= polygonId_host[0];
+	long int 	lineId 					= 0;
+	long int 	profileStartIndex		= 0;
+	int 		angleCounter 			= 0;
+	for (long int i = 1; i < numOfPoints; i++) {
+		if (polygonId_host[i] != currProfileId) {
+			if (angleCounter >= 2) {
+				lineX0_host[lineId] 					= polygonX_host[i-1];
+				lineY0_host[lineId] 					= polygonY_host[i-1];
+				lineX1_host[lineId] 					= polygonX_host[profileStartIndex  ];
+				lineY1_host[lineId] 					= polygonY_host[profileStartIndex  ];
+
+				lineId++;
+				numOfLines++;
+				lineX0_host 							= (double *)realloc(lineX0_host,(lineId + 1) * sizeof(double));
+				lineY0_host 							= (double *)realloc(lineY0_host,(lineId + 1) * sizeof(double));
+				lineX1_host 							= (double *)realloc(lineX1_host,(lineId + 1) * sizeof(double));
+				lineY1_host 							= (double *)realloc(lineY1_host,(lineId + 1) * sizeof(double));
+				
+				// numOfProfiles++;
+			}
+			angleCounter 			= 0;
+			
+			profileStartIndex 		= i;
+			currProfileId 			= polygonId_host[i];
+		}else{
+			angleCounter++;
+			lineX0_host[lineId] = polygonX_host[i-1];
+			lineY0_host[lineId] = polygonY_host[i-1];
+			lineX1_host[lineId] = polygonX_host[i  ];
+			lineY1_host[lineId] = polygonY_host[i  ];
+
+			lineId++;
+			numOfLines++;
+			lineX0_host = (double *)realloc(lineX0_host,(lineId + 1) * sizeof(double));
+			lineY0_host = (double *)realloc(lineY0_host,(lineId + 1) * sizeof(double));
+			lineX1_host = (double *)realloc(lineX1_host,(lineId + 1) * sizeof(double));
+			lineY1_host = (double *)realloc(lineY1_host,(lineId + 1) * sizeof(double));
+
+			if (i==numOfPoints-1) {
+				lineX0_host[lineId] = polygonX_host[i  ];
+				lineY0_host[lineId] = polygonY_host[i  ];
+				lineX1_host[lineId] = polygonX_host[profileStartIndex  ];
+				lineY1_host[lineId] = polygonY_host[profileStartIndex  ];
+
+				numOfLines++;
+			}
+		}
+	}

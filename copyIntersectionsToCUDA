@@ -1,0 +1,7 @@
+double *intersectionsX_device 	= NULL; cudaMalloc((void **)&intersectionsX_device, numOfIntersections * sizeof(double)); handle_error_cuda("cudaMalloc intersectionsX_device");
+	double *intersectionsY_device 	= NULL; cudaMalloc((void **)&intersectionsY_device, numOfIntersections * sizeof(double)); handle_error_cuda("cudaMalloc intersectionsY_device");
+	cudaMemcpy(intersectionsX_device, intersectionsX_host, numOfIntersections * sizeof(double), cudaMemcpyHostToDevice); handle_error_cuda("cudaMemcpy to intersectionsX_device");
+	cudaMemcpy(intersectionsY_device, intersectionsY_host, numOfIntersections * sizeof(double), cudaMemcpyHostToDevice); handle_error_cuda("cudaMemcpy to intersectionsX_device");
+	
+	cudaMemcpy(intersectionsX_host, intersectionsX_device, numOfIntersections * sizeof(double), cudaMemcpyDeviceToHost); handle_error_cuda("cudaMemcpy to intersectionsX_device");
+	cudaMemcpy(intersectionsY_host, intersectionsY_device, numOfIntersections * sizeof(double), cudaMemcpyDeviceToHost); handle_error_cuda("cudaMemcpy to intersectionsX_device");

@@ -1,0 +1,44 @@
+// int maxNumOfBlocks = 100;
+blockSize 	= 256;
+nBlocks 	=	numOfProfiles / blockSize + 1;
+short *pointIsOuter_host = (short *)malloc(numOfIntersections * sizeof(short));
+short *pointIsOuter_device = NULL; cudaMalloc((void **)&pointIsOuter_device, numOfIntersections * sizeof(short)); handle_error_cuda("cudaMalloc pointIsOuter_device");
+
+// for (long int intersectionStartIndex = 0; intersectionStartIndex < numOfIntersections; intersectionStartIndex+=(maxNumOfBlocks * blockSize) ) {
+// 	printf("intersectionStartIndex=%ld\n",intersectionStartIndex );
+	
+// 	detectOuter<<<nBlocks,blockSize>>>(intersectionStartIndex, pointIsOuter_device,numOfIntersections, intersectionsX_device, intersectionsY_device ,polygonX_device, polygonY_device, profileLength_device, profileStartIndex_device, numOfProfiles); handle_error_cuda("detectOuter");
+// 	handle_error_cuda("cudaMemcpy pointIsOuter_device to pointIsOuter_host");
+// 	// cudathreadsynchronize();
+// }
+// cudaMemcpy(pointIsOuter_host, pointIsOuter_device, numOfIntersections * sizeof(short),cudaMemcpyDeviceToHost);
+for (long int i = 0; i < numOfIntersections; i++){
+	pointIsOuter_host[i] = 0;
+}
+cudaMemcpy(pointIsOuter_device, pointIsOuter_host, numOfIntersections * sizeof(short), cudaMemcpyHostToDevice); handle_error_cuda("cudaMemcpypointisOuterHost to device");
+
+// double radius = 0.01;
+// for(long int intersectionId = 0; intersectionId < numOfIntersections; intersectionId++) {
+// 	if (intersectionId % 1000 ==0 )printf("intersectionId=%ld/%ld\n",  intersectionId, numOfIntersections);
+// 	for (float angle = 0; angle < 360; angle+=45) {
+// 		double tX = intersectionsX_host[intersectionId] + radius * cos(angle * 3.14 / 180);
+// 		double tY = intersectionsY_host[intersectionId] + radius * sin(angle * 3.14 / 180);
+// 		checkProfiles_device<<<nBlocks, blockSize>>>(pointIsOuter_device,intersectionId ,tX ,tY , polygonX_device, polygonY_device, numOfProfiles, profileLength_device, profileStartIndex_device);
+// 		handle_error_cuda("checkProfiles_device");
+// 	}
+		
+// }
+
+for(long int intersectionId = 0; intersectionId < numOfIntersections; intersectionId++) {
+	if (intersectionId % 1000 ==0 )printf("intersectionId=%ld/%ld\n",  intersectionId, numOfIntersections);
+	double tX = intersectionsX_host[intersectionId];
+	double tY = intersectionsY_host[intersectionId];
+	checkProfiles_device<<<nBlocks, blockSize>>>(pointIsOuter_device,intersectionId ,tX ,tY , polygonX_device, polygonY_device, numOfProfiles, profileLength_device, profileStartIndex_device);
+	handle_error_cuda("checkProfiles_device");
+}
+
+cudaMemcpy(pointIsOuter_host, pointIsOuter_device, numOfIntersections * sizeof(short),cudaMemcpyDeviceToHost );
+// for (int i = 0; i < numOfIntersections; i++)
+// {
+// 	printf("%d\n",(int)pointIsOuter_host[i] );
+// }
